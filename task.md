@@ -1,0 +1,29 @@
+- [x] Phase 9: Invoice Management & Document Workflow
+  - [x] Expand Invoice model schema snapshots & unique indexes in Invoice.ts
+  - [x] Implement InvoiceService database queries and generator in InvoiceService.ts
+  - [x] Implement Express controllers and routers in invoice.controller.ts and invoice.routes.ts
+  - [x] Update client store types and Zustand fetch/post actions in useInventoryStore.ts & services.ts
+  - [x] Mount Invoices routes in App configuration layout
+  - [x] Create Invoices list page with queries, searches, and reset filters
+  - [x] Update SaleDetail page to display generate/view invoice buttons
+  - [x] Create InvoiceDetail page rendering professional TAX INVOICE document, source links, print styling, and PDF filename trigger
+- [x] Phase 10: Reports, Dashboard Analytics & Business Insights
+  - [x] Configure backend database query aggregates in report.controller.ts
+  - [x] Add MongoDB indexes for fast range searches (saleDate, purchaseDate, paymentDate, etc.)
+  - [x] Configure reports router mount endpoints in report.routes.ts & app.ts
+  - [x] Update frontend API services mapping in client/src/api/services.ts
+  - [x] Update Zustand store type interfaces and actions in useInventoryStore.ts
+  - [x] Redesign Dashboard.tsx with dynamic date-range selector, KPIs, charts, and low stock list
+  - [x] Redesign Reports.tsx with modular Sales, Purchases, Inventory, Payments, Customers, and Suppliers reports
+  - [x] Add Profit Warning / COGS limitation alert to Reports layout
+  - [x] Add Print layout and CSV exporter actions to Reports layouts
+- [x] Phase 10.5: COMPLETE UI/UX PROFESSIONAL OVERHAUL & UPLOAD BUG FIXES
+  - [x] Integrate reusable state-bound Toast notification providers inside Zustand useInventoryStore.ts
+  - [x] Design beautiful SVG layout indicators inside client/src/components/Toast.tsx
+  - [x] Mount `<Toast>` element inside top-level DashboardLayout wrapper
+  - [x] Audit entire frontend codebase for native alert() or confirm() functions
+  - [x] Replace native confirms in Customers, Suppliers, and Sale details with the built-in ConfirmDialog
+  - [x] Replace native alerts in all page forms, image uploads, and ledger transactions with showToast
+  - [x] Fixed LocalStorageService to auto-create products, variants, and business/logo directories recursively
+  - [x] Configured upload router folder argument mapping for settings logo file storage
+  - [x] Complete client and server compilation validation test suites

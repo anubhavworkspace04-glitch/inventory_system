@@ -1,0 +1,20 @@
+{
+  "name": "inventory-app-root",
+  "private": true,
+  "version": "0.1.0",
+  "scripts": {
+    "install:all": "npm install --prefix client && npm install --prefix server",
+    "build": "npm run build --prefix client && npm run build --prefix server",
+    "client": "npm run dev --prefix client",
+    "server": "npm run dev --prefix server",
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "seed": "npm run seed --prefix server",
+    "migrate:stock": "npm run migrate:stock --prefix server",
+    "migrate:payments": "npm run migrate:payments --prefix server",
+    "reconcile:payments": "npm run reconcile:payments --prefix server",
+    "reconcile:customers": "npm run reconcile:customers --prefix server"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
