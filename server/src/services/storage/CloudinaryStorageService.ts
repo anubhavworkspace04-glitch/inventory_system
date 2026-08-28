@@ -5,7 +5,6 @@ import { AppError } from '../../utils/appError.js';
 
 export class CloudinaryStorageService implements StorageService {
   private fallbackService: LocalStorageService;
-  private isConfigured: boolean = false;
 
   constructor() {
     this.fallbackService = new LocalStorageService();
@@ -21,18 +20,36 @@ export class CloudinaryStorageService implements StorageService {
         api_secret: apiSecret,
         secure: true
       });
-      this.isConfigured = true;
       console.log('Cloudinary Storage Provider initialized successfully.');
     } else {
-      console.log('Cloudinary credentials not set. Falling back to Local Disk Storage.');
+      const isProduction = process.env.NODE_ENV === 'production';
+      if (isProduction) {
+        console.warn('WARNING: Production mode active but Cloudinary environment variables (CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET) are missing.');
+      } else {
+        console.log('Cloudinary credentials not set in local environment. Falling back to Local Disk Storage.');
+      }
     }
+  }
+
+  private isFullyConfigured(): boolean {
+    const cloudName = process.env.CLOUDINARY_CLOUD_NAME;
+    const apiKey = process.env.CLOUDINARY_API_KEY;
+    const apiSecret = process.env.CLOUDINARY_API_SECRET;
+    return !!(cloudName && apiKey && apiSecret);
   }
 
   public async saveFile(
     file: { buffer: Buffer; mimetype: string; originalname: string; size: number },
     folder: string
   ): Promise<string> {
-    if (!this.isConfigured) {
+    const isConfigured = this.isFullyConfigured();
+    const isProduction = process.env.NODE_ENV === 'production';
+
+    if (!isConfigured) {
+      if (isProduction) {
+        console.error('PRODUCTION ERROR: Cloudinary storage configuration missing. Local filesystem storage is disabled in production environment.');
+        throw new AppError('Cloudinary image storage configuration missing in production environment. Upload failed.', 500);
+      }
       return this.fallbackService.saveFile(file, folder);
     }
 
@@ -45,7 +62,7 @@ export class CloudinaryStorageService implements StorageService {
         },
         (error, result) => {
           if (error || !result) {
-            console.error('Cloudinary upload error:', error);
+            console.error('Cloudinary upload error occurred during asset stream transfer.');
             return reject(new AppError(`Cloudinary image upload failed: ${error?.message || 'Unknown error'}`, 500));
           }
           // Return secure HTTPS Cloudinary URL
@@ -58,7 +75,14 @@ export class CloudinaryStorageService implements StorageService {
   }
 
   public async deleteFile(fileUrl: string): Promise<void> {
-    if (!this.isConfigured || !fileUrl.includes('cloudinary.com')) {
+    const isConfigured = this.isFullyConfigured();
+    const isProduction = process.env.NODE_ENV === 'production';
+
+    if (!isConfigured || !fileUrl.includes('cloudinary.com')) {
+      if (isProduction) {
+        console.warn('Production notice: Skipping local file deletion for asset:', fileUrl);
+        return;
+      }
       return this.fallbackService.deleteFile(fileUrl);
     }
 
@@ -73,7 +97,7 @@ export class CloudinaryStorageService implements StorageService {
         
         if (publicId) {
           await cloudinary.uploader.destroy(publicId);
-          console.log(`Cloudinary image destroyed: ${publicId}`);
+          console.log(`Cloudinary image asset destroyed: ${publicId}`);
         }
       }
     } catch (err: any) {
