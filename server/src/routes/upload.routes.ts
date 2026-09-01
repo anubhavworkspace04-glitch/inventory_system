@@ -11,10 +11,10 @@ const upload = multer({
   limits: {
     fileSize: 5 * 1024 * 1024 // 5 MB limit
   },
-  fileFilter: (req, file, cb) => {
+  fileFilter: (req: Request, file: Express.Multer.File, cb: multer.FileFilterCallback): void => {
     const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
     if (!allowedTypes.includes(file.mimetype)) {
-      return cb(new AppError('Invalid file type. Only JPEG, PNG, and WEBP images are allowed.', 400) as any, false);
+      return cb(new AppError('Invalid file type. Only JPEG, PNG, and WEBP images are allowed.', 400));
     }
     cb(null, true);
   }
