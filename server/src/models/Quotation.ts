@@ -83,6 +83,4 @@ const QuotationSchema = new Schema<IQuotation>({
   timestamps: true
 });
 
-QuotationSchema.index({ status: 1 });
-
 export const Quotation = mongoose.model<IQuotation>('Quotation', QuotationSchema);

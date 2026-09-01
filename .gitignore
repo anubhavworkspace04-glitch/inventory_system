@@ -20,6 +20,10 @@ client/dist/
 server/dist/
 build/
 
+# Uploads directory
+uploads/
+server/uploads/
+
 # Logs and scratch scripts
 *.log
 npm-debug.log*
