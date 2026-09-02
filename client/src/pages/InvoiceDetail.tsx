@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Printer, Download, Receipt, FileText, Edit3, Check, X } from 'lucide-react';
 import { useInventoryStore } from '../store/useInventoryStore';
 import { formatCurrency, formatDate, getImageUrl } from '../utils';
+import { CompanyLogo } from '../components/CompanyLogo';
 
 const DEFAULT_TERMS = `1. Goods once sold will not be returned or exchanged.
 2. Interest @18% p.a. will be charged for delayed payments.`;
@@ -193,20 +194,7 @@ export const InvoiceDetail: React.FC = () => {
         {/* Invoice Header */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-gray-200 pb-5 print:border-gray-300 print:pb-3">
           <div className="flex items-start space-x-3.5">
-            {(settings?.logo || invoice.businessLogoSnapshot) ? (
-              <img
-                src={getImageUrl(settings?.logo || invoice.businessLogoSnapshot)}
-                alt="Business Logo"
-                className="h-12 w-12 object-contain rounded-lg border border-gray-200 print:border-gray-300"
-                onError={(e) => {
-                  (e.target as HTMLElement).style.display = 'none';
-                }}
-              />
-            ) : (
-              <div className="h-12 w-12 bg-gray-50 border border-gray-200 rounded-lg flex items-center justify-center print:bg-gray-100 print:border-gray-300">
-                <Receipt className="h-6 w-6 text-brand-600 print:text-gray-700" />
-              </div>
-            )}
+            <CompanyLogo className="h-12 w-12 rounded-lg" textClassName="font-extrabold text-xl text-white" fallbackName={settings?.businessName || invoice.businessNameSnapshot} />
             <div className="space-y-0.5">
               <h1 className="text-base font-bold tracking-wide text-gray-900 uppercase">
                 {settings?.businessName || invoice.businessNameSnapshot || 'GG GLASSWARE CO.'}

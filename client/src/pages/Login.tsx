@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Lock, Mail, ArrowRight, AlertCircle, Eye, EyeOff } from 'lucide-react';
 import { useAuthStore } from '../store/useAuthStore';
 import { useInventoryStore } from '../store/useInventoryStore';
+import { CompanyLogo } from '../components/CompanyLogo';
 
 export const Login: React.FC = () => {
   const navigate = useNavigate();
@@ -39,11 +40,9 @@ export const Login: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        {/* Company Identity Header */}
+        {/* Dynamic Company Identity Header */}
         <div className="flex justify-center mb-3">
-          <div className="h-12 w-12 rounded-xl bg-brand-500 text-white flex items-center justify-center font-bold text-xl shadow-sm border border-brand-600">
-            GG
-          </div>
+          <CompanyLogo className="h-12 w-12 rounded-xl" textClassName="font-extrabold text-xl text-white" />
         </div>
         <h2 className="text-center text-2xl font-extrabold text-gray-900">
           {businessName}

@@ -5,6 +5,7 @@ import {
 } from 'lucide-react';
 import { useInventoryStore } from '../store/useInventoryStore';
 import { formatCurrency, formatDate, getImageUrl } from '../utils';
+import { CompanyLogo } from '../components/CompanyLogo';
 import { quotationApi } from '../api/services';
 
 export const QuotationDetail: React.FC = () => {
@@ -302,20 +303,7 @@ export const QuotationDetail: React.FC = () => {
         {/* Document Header */}
         <div className="flex flex-row justify-between items-start gap-4 border-b border-gray-200 pb-6 print:border-gray-300 print:pb-4">
           <div className="flex items-start space-x-3.5">
-            {settings?.logo ? (
-              <img
-                src={getImageUrl(settings.logo)}
-                alt="Business Logo"
-                className="h-12 w-12 object-contain rounded-lg border border-gray-200 print:border-gray-300"
-                onError={(e) => {
-                  (e.target as HTMLElement).style.display = 'none';
-                }}
-              />
-            ) : (
-              <div className="h-12 w-12 bg-gray-50 border border-gray-200 rounded-lg flex items-center justify-center print:bg-gray-100 print:border-gray-300">
-                <ClipboardCheck className="h-6 w-6 text-brand-600 print:text-gray-700" />
-              </div>
-            )}
+            <CompanyLogo className="h-12 w-12 rounded-lg" textClassName="font-extrabold text-xl text-white" fallbackName={settings?.businessName} />
             <div className="space-y-0.5">
               <h1 className="text-base font-bold tracking-wide text-gray-900 print:text-black print:text-lg uppercase">
                 {settings?.businessName || 'GG GLASSWARE CO.'}

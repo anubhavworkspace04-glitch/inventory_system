@@ -13,7 +13,6 @@ import {
   Settings as SettingsIcon, 
   Menu, 
   X, 
-  Bell, 
   User,
   AlertTriangle,
   DollarSign,
@@ -22,8 +21,9 @@ import {
 } from 'lucide-react';
 import { useInventoryStore } from '../store/useInventoryStore';
 import { useAuthStore } from '../store/useAuthStore';
-import { getImageUrl } from '../utils';
+import { getImageUrl, getUserInitials } from '../utils';
 import { Toast } from '../components/Toast';
+import { CompanyLogo } from '../components/CompanyLogo';
 
 export const DashboardLayout: React.FC = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -43,7 +43,6 @@ export const DashboardLayout: React.FC = () => {
     settings,
     fetchSettings,
     serverError,
-    isLoading,
     toast,
     hideToast
   } = useInventoryStore();
@@ -99,6 +98,9 @@ export const DashboardLayout: React.FC = () => {
     return current ? current.name : 'System';
   };
 
+  const businessName = settings?.businessName || 'GG Glassware Co.';
+  const userInitials = getUserInitials(user?.name || 'Admin');
+
   // ── Server error screen ─────────────────────────────────────────────────────
   if (serverError && products.length === 0) {
     return (
@@ -138,12 +140,10 @@ export const DashboardLayout: React.FC = () => {
       >
         {/* Logo and Brand */}
         <div className="flex items-center justify-between h-16 px-5 border-b border-gray-100">
-          <Link to="/dashboard" className="flex items-center space-x-2.5">
-            <div className="h-8 w-8 rounded-lg bg-brand-500 flex items-center justify-center shadow-sm">
-              <Boxes className="h-4.5 w-4.5 text-white" />
-            </div>
-            <span className="text-base font-bold text-gray-900 tracking-tight">
-              GG Glasswares
+          <Link to="/dashboard" className="flex items-center space-x-2.5 min-w-0">
+            <CompanyLogo className="h-8 w-8 rounded-lg" textClassName="font-bold text-sm text-white" />
+            <span className="text-base font-bold text-gray-900 tracking-tight truncate">
+              {businessName}
             </span>
           </Link>
           <button 
@@ -179,7 +179,7 @@ export const DashboardLayout: React.FC = () => {
           })}
         </nav>
 
-        {/* Bottom User profile & Logout */}
+        {/* Bottom User Profile & Logout */}
         <div className="p-4 border-t border-gray-200 flex items-center justify-between">
           <div className="flex items-center space-x-3 min-w-0">
             {user?.avatarUrl ? (
@@ -190,12 +190,12 @@ export const DashboardLayout: React.FC = () => {
                 onError={(e) => { e.currentTarget.style.display = 'none'; }}
               />
             ) : (
-              <div className="flex items-center justify-center h-8 w-8 rounded-full bg-brand-100 border border-brand-200 shrink-0">
-                <User className="h-4 w-4 text-brand-600" />
+              <div className="flex items-center justify-center h-8 w-8 rounded-full bg-brand-100 border border-brand-200 shrink-0 font-bold text-xs text-brand-700">
+                {userInitials}
               </div>
             )}
             <div className="min-w-0">
-              <p className="text-sm font-semibold text-gray-900 truncate">{user?.name || 'GG Admin'}</p>
+              <p className="text-sm font-semibold text-gray-900 truncate">{user?.name || 'Admin User'}</p>
               <p className="text-xs text-gray-400 truncate">{user?.email || 'admin@ggglassware.com'}</p>
             </div>
           </div>
@@ -203,7 +203,7 @@ export const DashboardLayout: React.FC = () => {
           <button
             onClick={() => logout()}
             title="Sign Out"
-            className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+            className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"
           >
             <LogOut className="h-4 w-4" />
           </button>
@@ -224,40 +224,44 @@ export const DashboardLayout: React.FC = () => {
             <h1 className="text-lg font-semibold text-gray-900">{getPageTitle()}</h1>
           </div>
 
+          {/* Right Header Area: Authenticated User Info & Actions */}
           <div className="flex items-center space-x-3">
-            {/* Notification bell */}
-            <button className="relative p-2 text-gray-400 rounded-lg hover:bg-gray-100 hover:text-gray-600 focus:outline-none transition-colors">
-              <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-amber-400 ring-2 ring-white" />
-              <Bell className="h-5 w-5" />
-            </button>
-
-            <div className="h-6 w-px bg-gray-200" />
-
-            {/* Business info */}
-            <div className="flex items-center space-x-2.5 text-sm text-gray-700">
-              {settings?.logo ? (
+            <div className="flex items-center space-x-2.5">
+              {user?.avatarUrl ? (
                 <img
-                  src={getImageUrl(settings.logo)}
-                  alt="Logo"
-                  className="h-7 w-7 object-contain rounded-lg border border-gray-200 bg-gray-50"
+                  src={getImageUrl(user.avatarUrl)}
+                  alt={user.name || 'User'}
+                  className="h-8 w-8 rounded-full object-cover border border-brand-200 shrink-0"
                   onError={(e) => { e.currentTarget.style.display = 'none'; }}
                 />
               ) : (
-                <div className="h-7 w-7 rounded-lg bg-brand-100 flex items-center justify-center border border-brand-200">
-                  <Boxes className="h-4 w-4 text-brand-600" />
+                <div className="flex items-center justify-center h-8 w-8 rounded-full bg-brand-100 border border-brand-200 shrink-0 font-bold text-xs text-brand-700 shadow-sm">
+                  {userInitials}
                 </div>
               )}
-              <span className="hidden md:inline font-medium text-gray-900">
-                {settings?.businessName || 'GG Glasswares'}
-              </span>
-              <span className="px-2 py-0.5 text-xs rounded-md bg-gray-100 text-gray-600 border border-gray-200 font-medium">
-                INR (₹)
-              </span>
+              <div className="hidden sm:block text-left leading-tight">
+                <p className="text-xs font-bold text-gray-900">{user?.name || 'Admin User'}</p>
+                <p className="text-[10px] text-gray-500 font-medium capitalize mt-0.5">{user?.role || 'Administrator'}</p>
+              </div>
             </div>
+
+            <div className="h-5 w-px bg-gray-200 mx-1" />
+
+            <span className="hidden md:inline-flex px-2 py-0.5 text-xs rounded-md bg-gray-100 text-gray-600 border border-gray-200 font-medium">
+              INR (₹)
+            </span>
+
+            <button
+              onClick={() => logout()}
+              title="Sign Out"
+              className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"
+            >
+              <LogOut className="h-4.5 w-4.5" />
+            </button>
           </div>
         </header>
 
-        {/* Page content */}
+        {/* Page Content */}
         <main className="flex-1 overflow-y-auto bg-gray-50 p-6 print:bg-white print:p-0 print:overflow-visible print:block">
           <div className="max-w-7xl mx-auto space-y-6">
             <Outlet />

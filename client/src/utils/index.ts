@@ -30,7 +30,7 @@ export const formatDateTime = (dateTimeString: string): string => {
 
 export const getImageUrl = (imagePath?: string | null): string => {
   if (!imagePath) return '';
-  // Already an absolute URL (e.g. Unsplash placeholder) - return as-is
+  // Already an absolute URL (e.g. Unsplash placeholder or Cloudinary URL) - return as-is
   if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
     return imagePath;
   }
@@ -48,3 +48,55 @@ export const getImageUrl = (imagePath?: string | null): string => {
   return cleanPath;
 };
 
+/**
+ * Dynamically generates corporate initials from company name.
+ * Examples:
+ *  "GG Glassware Co." -> "GG"
+ *  "Anubhav Pratap" -> "AP"
+ *  "ABC Enterprises" -> "AE"
+ *  "Raj Kumar Glass Works" -> "RK"
+ *  "Glassware Company" -> "GC"
+ *  "Anubhav" -> "A"
+ */
+export const getCompanyInitials = (companyName?: string | null): string => {
+  if (!companyName || !companyName.trim()) {
+    return 'GG';
+  }
+
+  // Remove common punctuation marks
+  const cleanName = companyName.trim().replace(/[.,/#!$%^&*;:{}=\-_`~()]/g, '');
+  const words = cleanName.split(/\s+/).filter(w => w.length > 0);
+
+  if (words.length === 0) return 'GG';
+
+  if (words.length === 1) {
+    return words[0].substring(0, 1).toUpperCase();
+  }
+
+  // First letter of first 2 words
+  return (words[0][0] + words[1][0]).toUpperCase();
+};
+
+/**
+ * Dynamically generates user initials from user full name.
+ * Examples:
+ *  "Anubhav Pratap Singh" -> "AP"
+ *  "Rahul Kumar" -> "RK"
+ *  "Admin" -> "A"
+ */
+export const getUserInitials = (userName?: string | null): string => {
+  if (!userName || !userName.trim()) {
+    return 'U';
+  }
+
+  const cleanName = userName.trim().replace(/[.,/#!$%^&*;:{}=\-_`~()]/g, '');
+  const words = cleanName.split(/\s+/).filter(w => w.length > 0);
+
+  if (words.length === 0) return 'U';
+
+  if (words.length === 1) {
+    return words[0].substring(0, 1).toUpperCase();
+  }
+
+  return (words[0][0] + words[1][0]).toUpperCase();
+};
