@@ -214,7 +214,7 @@ export const Invoices: React.FC = () => {
                     <td className="px-6 py-4 text-right">
                       <div className="flex items-center justify-end space-x-2">
                         <Link
-                          to={`/invoices/${inv.id}`}
+                          to={`/invoices/${inv.id || inv._id}`}
                           className="p-1 text-gray-400 hover:text-brand-600 rounded hover:bg-gray-100 transition-colors"
                           title="View invoice details"
                         >

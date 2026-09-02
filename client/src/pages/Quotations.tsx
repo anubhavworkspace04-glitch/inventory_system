@@ -203,9 +203,9 @@ export const Quotations: React.FC = () => {
                     }
 
                     return (
-                      <tr key={q.id} className="hover:bg-gray-50 text-gray-700 transition-colors bg-white">
+                      <tr key={q.id || q._id} className="hover:bg-gray-50 text-gray-700 transition-colors bg-white">
                         <td className="px-6 py-4 font-mono font-bold text-brand-600 hover:underline">
-                          <Link to={`/quotations/${q.id}`}>{q.quotationNumber}</Link>
+                          <Link to={`/quotations/${q.id || q._id}`}>{q.quotationNumber}</Link>
                         </td>
                         <td className="px-6 py-4 font-semibold text-gray-800">
                           {q.customerId ? (
@@ -228,7 +228,7 @@ export const Quotations: React.FC = () => {
                         <td className="px-6 py-4 text-right">
                           <div className="flex justify-end space-x-1">
                             <Link
-                              to={`/quotations/${q.id}`}
+                              to={`/quotations/${q.id || q._id}`}
                               className="p-1.5 text-gray-400 hover:text-brand-600 hover:bg-gray-100 rounded transition-colors"
                               title="View Quotation details"
                             >

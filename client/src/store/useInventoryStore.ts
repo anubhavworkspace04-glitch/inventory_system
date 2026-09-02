@@ -6,6 +6,21 @@ import {
   productApi, customerApi, supplierApi, purchaseApi, saleApi, paymentApi, quotationApi, stockApi, dashboardApi, settingsApi, invoiceApi, reportApi 
 } from '../api/services';
 
+const mapEntity = (item: any) => {
+  if (!item) return item;
+  const idStr = (item.id || item._id) ? String(item.id || item._id) : '';
+  return {
+    ...item,
+    id: idStr,
+    _id: idStr
+  };
+};
+
+const mapEntityArray = (arr: any[]) => {
+  if (!Array.isArray(arr)) return [];
+  return arr.map(mapEntity);
+};
+
 interface InventoryStore {
   products: Product[];
   customers: Customer[];
@@ -113,7 +128,7 @@ export const useInventoryStore = create<InventoryStore>((set, get) => ({
     set({ isLoading: true, serverError: null });
     try {
       const res = await productApi.getAll(params);
-      set({ products: res.data, isLoading: false });
+      set({ products: mapEntityArray(res.data), isLoading: false });
     } catch (err: any) {
       set({ serverError: err.message || 'Failed to fetch products', isLoading: false });
     }
@@ -123,11 +138,7 @@ export const useInventoryStore = create<InventoryStore>((set, get) => ({
     set({ isLoading: true, serverError: null });
     try {
       const res = await customerApi.getAll(params);
-      const mapped = (res.data || []).map((c: any) => ({
-        ...c,
-        id: c.id || c._id
-      }));
-      set({ customers: mapped, isLoading: false });
+      set({ customers: mapEntityArray(res.data), isLoading: false });
     } catch (err: any) {
       set({ serverError: err.message || 'Failed to fetch customers', isLoading: false });
     }
@@ -137,7 +148,7 @@ export const useInventoryStore = create<InventoryStore>((set, get) => ({
     set({ isLoading: true, serverError: null });
     try {
       const res = await supplierApi.getAll(params);
-      set({ suppliers: res.data, isLoading: false });
+      set({ suppliers: mapEntityArray(res.data), isLoading: false });
     } catch (err: any) {
       set({ serverError: err.message || 'Failed to fetch suppliers', isLoading: false });
     }
@@ -147,7 +158,7 @@ export const useInventoryStore = create<InventoryStore>((set, get) => ({
     set({ isLoading: true, serverError: null });
     try {
       const res = await purchaseApi.getAll(params);
-      set({ purchases: res.data, isLoading: false });
+      set({ purchases: mapEntityArray(res.data), isLoading: false });
     } catch (err: any) {
       set({ serverError: err.message || 'Failed to fetch purchases', isLoading: false });
     }
@@ -157,7 +168,7 @@ export const useInventoryStore = create<InventoryStore>((set, get) => ({
     set({ isLoading: true, serverError: null });
     try {
       const res = await saleApi.getAll(params);
-      set({ sales: res.data, isLoading: false });
+      set({ sales: mapEntityArray(res.data), isLoading: false });
     } catch (err: any) {
       set({ serverError: err.message || 'Failed to fetch sales', isLoading: false });
     }
@@ -167,7 +178,7 @@ export const useInventoryStore = create<InventoryStore>((set, get) => ({
     set({ isLoading: true, serverError: null });
     try {
       const res = await quotationApi.getAll(params);
-      set({ quotations: res.data, isLoading: false });
+      set({ quotations: mapEntityArray(res.data), isLoading: false });
     } catch (err: any) {
       set({ serverError: err.message || 'Failed to fetch quotations', isLoading: false });
     }
@@ -177,7 +188,7 @@ export const useInventoryStore = create<InventoryStore>((set, get) => ({
     set({ isLoading: true, serverError: null });
     try {
       const res = await stockApi.getHistory(params);
-      set({ stockMovements: res.data, isLoading: false });
+      set({ stockMovements: mapEntityArray(res.data), isLoading: false });
     } catch (err: any) {
       set({ serverError: err.message || 'Failed to fetch stock movements', isLoading: false });
     }
@@ -187,7 +198,7 @@ export const useInventoryStore = create<InventoryStore>((set, get) => ({
     set({ isLoading: true, serverError: null });
     try {
       const res = await paymentApi.getAll(params);
-      set({ payments: res.data, isLoading: false });
+      set({ payments: mapEntityArray(res.data), isLoading: false });
     } catch (err: any) {
       set({ serverError: err.message || 'Failed to fetch payments', isLoading: false });
     }
@@ -197,7 +208,7 @@ export const useInventoryStore = create<InventoryStore>((set, get) => ({
     set({ isLoading: true, serverError: null });
     try {
       const res = await invoiceApi.getAll(params);
-      set({ invoices: res.data, isLoading: false });
+      set({ invoices: mapEntityArray(res.data), isLoading: false });
     } catch (err: any) {
       set({ serverError: err.message || 'Failed to fetch invoices', isLoading: false });
     }
@@ -207,7 +218,8 @@ export const useInventoryStore = create<InventoryStore>((set, get) => ({
     set({ isLoading: true, serverError: null });
     try {
       const res = await reportApi.getDashboardReport(params);
-      set({ dashboardStats: res.data, isLoading: false });
+      const dataPayload = (res as any).data?.data || res.data;
+      set({ dashboardStats: dataPayload, isLoading: false });
     } catch (err: any) {
       set({ serverError: err.message || 'Failed to load dashboard stats', isLoading: false });
     }
@@ -217,7 +229,8 @@ export const useInventoryStore = create<InventoryStore>((set, get) => ({
     set({ isLoading: true, serverError: null });
     try {
       const res = await settingsApi.get();
-      set({ settings: res.data, isLoading: false });
+      const dataPayload = (res as any).data?.data || res.data;
+      set({ settings: dataPayload, isLoading: false });
     } catch (err: any) {
       set({ serverError: err.message || 'Failed to fetch settings', isLoading: false });
     }
@@ -227,7 +240,8 @@ export const useInventoryStore = create<InventoryStore>((set, get) => ({
     set({ isLoading: true, serverError: null });
     try {
       const res = await settingsApi.update(settingsData);
-      set({ settings: res.data, isLoading: false });
+      const dataPayload = (res as any).data?.data || res.data;
+      set({ settings: dataPayload, isLoading: false });
     } catch (err: any) {
       set({ serverError: err.message || 'Failed to update settings', isLoading: false });
       throw err;
@@ -240,11 +254,7 @@ export const useInventoryStore = create<InventoryStore>((set, get) => ({
     try {
       const res = await customerApi.create(customerData);
       await get().fetchCustomers();
-      const customer = res.data;
-      return {
-        ...customer,
-        id: customer.id || (customer as any)._id
-      };
+      return mapEntity((res as any).data?.data || res.data);
     } catch (err: any) {
       set({ serverError: err.message || 'Failed to add customer', isLoading: false });
       throw err;
@@ -322,7 +332,7 @@ export const useInventoryStore = create<InventoryStore>((set, get) => ({
   addVariant: async (productId, variant) => {
     set({ isLoading: true, serverError: null });
     try {
-      const product = get().products.find(p => p.id === productId);
+      const product = get().products.find(p => p.id === productId || p._id === productId);
       if (!product) throw new Error('Product not found');
       
       const updatedVariants = [...product.variants, variant];
@@ -337,11 +347,11 @@ export const useInventoryStore = create<InventoryStore>((set, get) => ({
   updateVariant: async (productId, variantId, variantData) => {
     set({ isLoading: true, serverError: null });
     try {
-      const product = get().products.find(p => p.id === productId);
+      const product = get().products.find(p => p.id === productId || p._id === productId);
       if (!product) throw new Error('Product not found');
 
       const updatedVariants = product.variants.map(v => 
-        v.id === variantId ? { ...v, ...variantData } : v
+        (v.id === variantId || (v as any)._id === variantId) ? { ...v, ...variantData } : v
       );
       await productApi.update(productId, { variants: updatedVariants });
       await get().fetchProducts();
@@ -356,7 +366,7 @@ export const useInventoryStore = create<InventoryStore>((set, get) => ({
     try {
       const res = await supplierApi.create(supplier);
       await get().fetchSuppliers();
-      return res.data;
+      return mapEntity((res as any).data?.data || res.data);
     } catch (err: any) {
       set({ serverError: err.message || 'Failed to add supplier', isLoading: false });
       throw err;
@@ -586,7 +596,7 @@ export const useInventoryStore = create<InventoryStore>((set, get) => ({
       const res = await invoiceApi.create(saleId);
       await get().fetchInvoices();
       set({ isLoading: false });
-      return res.data;
+      return mapEntity((res as any).data?.data || res.data);
     } catch (err: any) {
       set({ serverError: err.message || 'Failed to create invoice', isLoading: false });
       throw err;
@@ -598,7 +608,7 @@ export const useInventoryStore = create<InventoryStore>((set, get) => ({
     try {
       const res = await invoiceApi.getBySaleId(saleId);
       set({ isLoading: false });
-      return res.data;
+      return mapEntity((res as any).data?.data || res.data);
     } catch (err: any) {
       set({ serverError: err.message || 'Failed to get invoice by sale id', isLoading: false });
       throw err;
@@ -610,7 +620,7 @@ export const useInventoryStore = create<InventoryStore>((set, get) => ({
     try {
       const res = await invoiceApi.getById(id);
       set({ isLoading: false });
-      return res.data;
+      return mapEntity((res as any).data?.data || res.data);
     } catch (err: any) {
       set({ serverError: err.message || 'Failed to get invoice', isLoading: false });
       throw err;
@@ -622,7 +632,7 @@ export const useInventoryStore = create<InventoryStore>((set, get) => ({
     try {
       const res = await invoiceApi.update(id, data);
       set({ isLoading: false });
-      return res.data;
+      return mapEntity((res as any).data?.data || res.data);
     } catch (err: any) {
       set({ serverError: err.message || 'Failed to update invoice', isLoading: false });
       throw err;

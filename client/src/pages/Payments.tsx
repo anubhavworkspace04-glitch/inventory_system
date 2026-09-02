@@ -199,7 +199,7 @@ export const Payments: React.FC = () => {
                   {payments.map(p => (
                     <tr key={p.id} className={`hover:bg-gray-50 text-gray-700 bg-white transition-colors ${p.status === 'Reversed' ? 'opacity-60 line-through' : ''}`}>
                       <td className="px-6 py-4 font-mono font-bold text-brand-600">
-                        <Link to={`/payments/${p.id}`} className="hover:underline">{p.paymentNumber}</Link>
+                        <Link to={`/payments/${p.id || p._id}`} className="hover:underline">{p.paymentNumber}</Link>
                       </td>
                       <td className="px-6 py-4 font-mono text-xs">{formatDate(p.paymentDate)}</td>
                       <td className="px-6 py-4 font-semibold text-gray-800">
@@ -236,7 +236,7 @@ export const Payments: React.FC = () => {
                       </td>
                       <td className="px-6 py-4 text-right">
                         <Link
-                          to={`/payments/${p.id}`}
+                          to={`/payments/${p.id || p._id}`}
                           className="p-1.5 text-gray-400 hover:text-brand-600 hover:bg-gray-100 rounded inline-block transition-colors"
                           title="View Voucher"
                         >

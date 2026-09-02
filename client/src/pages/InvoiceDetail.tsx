@@ -21,12 +21,17 @@ export const InvoiceDetail: React.FC = () => {
   useEffect(() => {
     fetchSettings();
     const loadInvoice = async () => {
-      if (!id) return;
+      if (!id || id === 'undefined') return;
       setErrorMsg(null);
       try {
-        const data = await getInvoiceByIdStore(id);
-        setInvoice(data);
-        setTermsInput(data.terms || DEFAULT_TERMS);
+        const res: any = await getInvoiceByIdStore(id);
+        const invData = res?.data || res;
+        if (!invData) {
+          setErrorMsg('Invoice details not found.');
+          return;
+        }
+        setInvoice(invData);
+        setTermsInput(invData.terms || DEFAULT_TERMS);
       } catch (err: any) {
         setErrorMsg(err.response?.data?.message || err.message || 'Failed to fetch invoice details.');
       }

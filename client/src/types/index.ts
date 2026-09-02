@@ -1,5 +1,6 @@
 export interface Variant {
   id: string;
+  _id?: string;
   sku: string;
   name: string;
   image?: string;
@@ -10,6 +11,7 @@ export interface Variant {
 
 export interface Product {
   id: string;
+  _id?: string;
   name: string;
   category: string;
   description: string;
@@ -40,6 +42,7 @@ export interface PurchaseItem {
 
 export interface Supplier {
   id: string;
+  _id?: string;
   name: string;
   phone: string;
   email?: string;
@@ -52,6 +55,7 @@ export interface Supplier {
 
 export interface Purchase {
   id: string;
+  _id?: string;
   purchaseNumber: string;
   supplierId: string;
   supplierNameSnapshot: string;
@@ -85,6 +89,7 @@ export interface SaleItem {
 
 export interface Sale {
   id: string;
+  _id?: string;
   saleNumber: string;
   saleDate: string;
   customerId?: string | null;
@@ -109,6 +114,7 @@ export interface Sale {
 
 export interface Customer {
   id: string;
+  _id?: string;
   name: string;
   phone: string;
   email?: string;
@@ -122,6 +128,7 @@ export interface Customer {
 
 export interface Payment {
   id: string;
+  _id?: string;
   paymentNumber: string;
   paymentDate: string;
   customerId?: string | null;
@@ -162,6 +169,7 @@ export interface InvoiceItem {
 
 export interface Invoice {
   id: string;
+  _id?: string;
   invoiceNumber: string;
   invoiceDate: string;
   saleId: string;
@@ -207,6 +215,7 @@ export interface QuotationItem {
 
 export interface Quotation {
   id: string;
+  _id?: string;
   quotationNumber: string;
   quotationDate: string;
   expiryDate: string;
@@ -228,6 +237,7 @@ export interface Quotation {
 
 export interface StockMovement {
   id: string;
+  _id?: string;
   productId: string;
   productName: string;
   variantId: string;
@@ -242,6 +252,7 @@ export interface StockMovement {
 
 export interface BusinessSettings {
   id?: string;
+  _id?: string;
   businessName: string;
   gstin: string;
   address?: string;
@@ -252,4 +263,3 @@ export interface BusinessSettings {
   allowNegativeStock: boolean;
   enableLowStockAlerts: boolean;
 }
-

@@ -43,13 +43,22 @@ export const QuotationDetail: React.FC = () => {
   }, [id]);
 
   const loadQuotation = async () => {
-    if (!id) return;
+    if (!id || id === 'undefined') return;
     setLoading(true);
     setErrorMsg(null);
     try {
       const res = await quotationApi.getById(id);
-      setQuotation(res.data);
-      evaluateStockAvailability(res.data);
+      const quoteData = (res as any).data?.data || res.data || res;
+      if (!quoteData) {
+        setErrorMsg('Quotation details not found.');
+        return;
+      }
+      const mappedQuote = {
+        ...quoteData,
+        id: quoteData.id || quoteData._id
+      };
+      setQuotation(mappedQuote);
+      evaluateStockAvailability(mappedQuote);
     } catch (err: any) {
       setErrorMsg(err.response?.data?.message || err.message || 'Failed to fetch quotation details.');
     } finally {

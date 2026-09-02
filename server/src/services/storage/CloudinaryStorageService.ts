@@ -54,7 +54,10 @@ export class CloudinaryStorageService implements StorageService {
     }
 
     return new Promise((resolve, reject) => {
-      const cleanFolder = `inventory_app/${folder.replace(/\//g, '_')}`;
+      // Clean target folder path e.g. inventory_system/products or inventory_system/variants
+      const cleanSubFolder = folder.replace(/^\/+|\/+$/g, '').replace(/\\/g, '/');
+      const cleanFolder = `inventory_system/${cleanSubFolder || 'products'}`;
+
       const uploadStream = cloudinary.uploader.upload_stream(
         {
           folder: cleanFolder,
@@ -87,12 +90,14 @@ export class CloudinaryStorageService implements StorageService {
     }
 
     try {
-      // Extract public_id from Cloudinary URL (e.g. inventory_app/products/xyz)
+      // Extract public_id from Cloudinary URL
+      // E.g. https://res.cloudinary.com/cloudname/image/upload/v1234567/inventory_system/products/sample.png
       const urlParts = fileUrl.split('/upload/');
       if (urlParts.length > 1) {
         const pathAfterUpload = urlParts[1];
-        // strip version if present e.g. v1234567/
+        // Strip version if present (e.g. v1234567/)
         const pathWithoutVersion = pathAfterUpload.replace(/^v\d+\//, '');
+        // Strip file extension
         const publicId = pathWithoutVersion.substring(0, pathWithoutVersion.lastIndexOf('.'));
         
         if (publicId) {

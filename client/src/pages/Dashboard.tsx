@@ -206,7 +206,7 @@ const KpiCard: React.FC<KpiCardProps> = ({ label, value, sub, icon, accentColor,
 // ─── Dashboard Page ────────────────────────────────────────────────────────────
 export const Dashboard: React.FC = () => {
   const { dashboardStats, fetchDashboardStats, isLoading } = useInventoryStore();
-  const [dateRange, setDateRange] = useState<string>('This Month');
+  const [dateRange, setDateRange] = useState<string>('All Time');
   const [customFrom, setCustomFrom] = useState<string>('');
   const [customTo, setCustomTo] = useState<string>('');
 
@@ -228,6 +228,11 @@ export const Dashboard: React.FC = () => {
     let to = '';
 
     switch (range) {
+      case 'All Time': {
+        from = '';
+        to = '';
+        break;
+      }
       case 'Today': {
         from = formatDateString(now);
         to = formatDateString(now);
@@ -394,7 +399,7 @@ export const Dashboard: React.FC = () => {
         {/* Date Selector Row */}
         <div className="flex flex-wrap items-center gap-2">
           <div className="flex bg-white border border-gray-200 rounded-lg p-1 shadow-sm">
-            {['Today', 'Yesterday', 'This Week', 'This Month', 'Last Month', 'This Year', 'Custom Range'].map((range) => (
+            {['All Time', 'Today', 'Yesterday', 'This Week', 'This Month', 'Last Month', 'This Year', 'Custom Range'].map((range) => (
               <button
                 key={range}
                 onClick={() => setDateRange(range)}

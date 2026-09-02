@@ -152,7 +152,15 @@ export class ProductService {
           // Update variant properties
           existingVar.name = vData.name;
           existingVar.sku = cleanSku;
-          if (vData.image !== undefined) existingVar.image = vData.image;
+          if (vData.image !== undefined) {
+            if (existingVar.image && existingVar.image !== vData.image && existingVar.image.includes('cloudinary.com')) {
+              // Asynchronously clean up replaced Cloudinary asset
+              import('../services/storage/CloudinaryStorageService.js').then(({ storageService }) => {
+                storageService.deleteFile(existingVar.image!).catch(err => console.warn('Cloudinary image cleanup notice:', err.message));
+              });
+            }
+            existingVar.image = vData.image;
+          }
           if (vData.isActive !== undefined) existingVar.isActive = vData.isActive;
 
           // Crucial Stock Security: DO NOT allow manual current/cached stock editing
@@ -263,6 +271,14 @@ export class ProductService {
         mode: 'deactivated'
       };
     } else {
+      // Clean up any Cloudinary images for variants of permanently deleted products
+      for (const v of product.variants) {
+        if (v.image && v.image.includes('cloudinary.com')) {
+          import('../services/storage/CloudinaryStorageService.js').then(({ storageService }) => {
+            storageService.deleteFile(v.image!).catch(err => console.warn('Cloudinary deletion notice:', err.message));
+          });
+        }
+      }
       await Product.deleteOne({ _id: productId });
       return {
         success: true,

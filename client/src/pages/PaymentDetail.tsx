@@ -23,12 +23,20 @@ export const PaymentDetail: React.FC = () => {
   }, [id]);
 
   const loadPayment = async () => {
-    if (!id) return;
+    if (!id || id === 'undefined') return;
     setLoading(true);
     setErrorMsg(null);
     try {
       const res = await paymentApi.getById(id);
-      setPayment(res.data);
+      const paymentData = (res as any).data?.data || res.data || res;
+      if (!paymentData) {
+        setErrorMsg('Payment voucher details not found.');
+        return;
+      }
+      setPayment({
+        ...paymentData,
+        id: paymentData.id || paymentData._id
+      });
     } catch (err: any) {
       setErrorMsg(err.response?.data?.message || err.message || 'Failed to load payment detail.');
     } finally {
