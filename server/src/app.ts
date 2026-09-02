@@ -46,6 +46,9 @@ const CLIENT_DIST_DIR = getClientDistDir();
 
 const app = express();
 
+// Trust reverse proxy (1st hop on Render / reverse proxy)
+app.set('trust proxy', 1);
+
 // Security Middlewares with cross-origin resource policy for uploaded image assets
 app.use(helmet({
   crossOriginResourcePolicy: { policy: 'cross-origin' }
@@ -79,6 +82,14 @@ app.use(express.json({ limit: '10kb' }));
 
 // Serve static uploads
 app.use('/uploads', express.static(UPLOADS_DIR));
+
+// Root Health Check Endpoint for Render
+app.get('/', (req, res) => {
+  res.status(200).json({
+    status: 'ok',
+    service: 'inventory-api'
+  });
+});
 
 // 1. Health Check Endpoint
 app.get('/api/health', (req, res) => {
@@ -124,7 +135,7 @@ app.all('*', (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
 });
 
-// 4. Centralized Global Error Handler
+// 5. Centralized Global Error Handler
 app.use(errorHandler);
 
 export default app;
